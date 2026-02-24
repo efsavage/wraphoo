@@ -1,0 +1,33 @@
+{
+  "name": "yahoo-fantasy-mcp",
+  "version": "0.1.0",
+  "description": "MCP server and local OAuth UI for Yahoo Fantasy Sports API",
+  "type": "module",
+  "main": "dist/mcp.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev:mcp": "tsx src/mcp.ts",
+    "dev:ui": "tsx src/ui.ts",
+    "start:mcp": "node dist/mcp.js",
+    "start:ui": "node dist/ui.js",
+    "test:mcp": "npm run build && node scripts/mcp-smoke-test.mjs"
+  },
+  "keywords": [
+    "mcp",
+    "yahoo",
+    "fantasy",
+    "oauth"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.11.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.8.1",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3"
+  }
+}
