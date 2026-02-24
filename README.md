@@ -79,6 +79,74 @@ npm run start:mcp
 - `fantasy_user_games`
 - `diagnostics_run`
 
+## Claude Desktop Setup (Step-by-Step)
+This is the easiest way to use the server in a real assistant workflow.
+
+1. Build once:
+```bash
+npm run build
+```
+
+2. Find Claude Desktop config file:
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+- Linux: `~/.config/Claude/claude_desktop_config.json`
+
+3. Add this server entry (merge with your existing JSON if needed):
+```json
+{
+  "mcpServers": {
+    "yahoo-fantasy": {
+      "command": "node",
+      "args": ["/home/efs/wraphoo/dist/mcp.js"],
+      "env": {
+        "YAHOO_CLIENT_ID": "YOUR_CLIENT_ID",
+        "YAHOO_CLIENT_SECRET": "YOUR_CLIENT_SECRET",
+        "YAHOO_REDIRECT_URI": "http://localhost:3476/auth/callback",
+        "YAHOO_SCOPE": "fspt-r",
+        "YAHOO_TOKEN_PATH": "/home/efs/wraphoo/.yahoo-tokens.json"
+      }
+    }
+  }
+}
+```
+
+4. Restart Claude Desktop completely.
+
+5. In Claude, ask:
+- `Use the yahoo-fantasy MCP server and run oauth_status.`
+
+If you get token errors, complete OAuth first via:
+```bash
+npm run dev:ui
+```
+Then open `http://localhost:3476`.
+
+If Yahoo requires HTTPS redirect URIs, run an HTTPS tunnel (for example `ngrok http 3476`) and set:
+- Yahoo app redirect URI: `https://YOUR-NGROK-DOMAIN/auth/callback`
+- `YAHOO_REDIRECT_URI` to that exact same value
+
+## Useful Claude Prompt Examples
+You can paste these directly into Claude Desktop.
+
+1. Basic health check:
+- `Use yahoo-fantasy tools to run diagnostics_run. If it fails, explain the exact fix in plain English.`
+
+2. Find your league keys:
+- `Use fantasy_user_games and list all my game and league keys in a table.`
+
+3. Get standings for one league:
+- `Use fantasy_request with path /league/423.l.12345/standings and summarize the top 5 teams.`
+
+4. Get team roster:
+- `Use fantasy_request with path /team/423.l.12345.t.7/roster and format players by position.`
+
+5. Player stats:
+- `Use fantasy_request with path /player/423.p.5479/stats and explain the key numbers.`
+
+6. Multi-step analysis:
+- `Use yahoo-fantasy MCP tools to find my current NFL fantasy league, fetch standings, then identify which teams are within 1 game of first place.`
+
 ## Example MCP Client Config
 Use a command that starts the MCP server with your `.env` loaded.
 
@@ -103,6 +171,7 @@ Example idea (adjust to your client):
 You can also point to built files:
 - command: `node`
 - args: `["dist/mcp.js"]` (after `npm run build`)
+- For Claude Desktop, prefer built files over `tsx` for reliability.
 
 ## Common Endpoint Examples
 Use these in the UI tester or `fantasy_request` tool:
